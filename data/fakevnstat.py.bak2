@@ -1,0 +1,59 @@
+#!/usr/bin/python3
+
+import json
+import random
+from datetime import datetime, date, time, timedelta
+
+
+start_date = datetime(2024, 6, 1, 0, 0)
+end_date = datetime.now()
+max_daily_traffic = 1024 * 1024 * 100
+
+
+
+data = {}
+data['interfaces'] = [{
+    'name': 'interface1',
+    'traffic': {
+		'year': [
+			#{'date': {'year': 2024}, 'rx': 99999999, 'tx': 555555555}
+		],
+		'hour': [],
+		'day': [],
+		'month': []
+    }
+}]
+
+
+
+#for year in range(year_start, year_end+1):
+#delta = timedelta(days=1)
+delta = timedelta(hours=1)
+while start_date <= end_date:
+	#data['interfaces'][0]['traffic']['year'].append({'date': {'year': year}, 'rx': random.randint(0, 9999999999), 'tx': random.randint(0, 9999999999)})
+	data['interfaces'][0]['traffic']['hour'].append(
+		{
+			'date': {
+				'year': start_date.year,
+				'month': start_date.month,
+				'day': start_date.day
+			},
+			'time': {
+				'hour': start_date.hour,
+				'minute': 0
+			},
+			
+			'rx': random.randint(0, max_daily_traffic),
+			'tx': random.randint(0, max_daily_traffic)
+		}
+	)
+	
+	#print(start_date.strftime("%Y-%m-%d"))
+	start_date += delta
+	
+#for hdata in data['interfaces'][0]['traffic']['hour']:
+#	
+
+
+json_data = json.dumps(data, sort_keys=True, indent=2)
+print(json_data)
