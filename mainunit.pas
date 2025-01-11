@@ -79,12 +79,19 @@ begin
   if not DataProvider.VnstatInstalled then
   begin
     MessageDlg('Could''t find ''vnstat'' executable. Check VnStat installed on your computer.', mtError, [mbOK], 0);
+    Application.Terminate;
     Exit;
   end;
 
+  Interfaces := DataProvider.GetInterfaces;
+  if Length(Interfaces) = 0 then
+  begin
+    MessageDlg('No network interfaces found.', mtError, [mbOK], 0);
+    Application.Terminate;
+    Exit;
+  end;
 
   InterfaceComboBox.Clear;
-  Interfaces := DataProvider.GetInterfaces;
   for InterfaceName in Interfaces do
     InterfaceComboBox.Items.Append(InterfaceName);
   //InterfaceComboBox.ItemIndex := 0;
