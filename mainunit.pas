@@ -35,6 +35,7 @@ type
       ASteps: TDateTimeStep);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure InterfaceComboBoxChange(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);
@@ -100,6 +101,16 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   DataProvider.Free;
+end;
+
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  if InterfaceComboBox.ItemIndex = -1 then
+  begin
+    InterfaceComboBox.ItemIndex := 0;
+    DataProvider.Refresh;
+    RefreshData;
+  end;
 end;
 
 procedure TMainForm.InterfaceComboBoxChange(Sender: TObject);

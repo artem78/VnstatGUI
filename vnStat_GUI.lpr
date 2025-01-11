@@ -1,4 +1,4 @@
-program project1;
+program vnStat_GUI;
 
 {$mode objfpc}{$H+}
 
@@ -17,7 +17,7 @@ uses
 
 begin
   RequireDerivedFormResource:=True;
-  Application.Title:='project1';
+  Application.Title:='vnStat GUI';
   Application.Scaled:=True;
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);

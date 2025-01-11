@@ -1,13 +1,15 @@
 object MainForm: TMainForm
-  Left = 296
+  Left = 250
   Height = 605
-  Top = 119
+  Top = 113
   Width = 772
-  Caption = 'VnStat GUI'
+  Caption = 'vnStat GUI'
   ClientHeight = 605
   ClientWidth = 772
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
+  Position = poScreenCenter
   LCLVersion = '2.2.4.0'
   object Panel1: TPanel
     Left = 0

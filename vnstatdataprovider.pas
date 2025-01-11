@@ -37,11 +37,11 @@ implementation
 uses process, FileUtil, jsonparser;
 
 const
-  {$IFOPT D+}
-  Executable = '/home/artem/Projects/Lazarus/VnstatGUI/data/fakevnstat.py';
-  {$ELSE}
+  (*{$IFOPT D+}
+  Executable = './data/fakevnstat.py';
+  {$ELSE}*)
   Executable = 'vnstat';
-  {$ENDIF}
+  //{$ENDIF}
 
 { TVnstatDataProvider }
 
