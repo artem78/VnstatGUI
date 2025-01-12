@@ -33,3 +33,4 @@ lib/
 
 vnstat-gui
 *.backup
+/releases/

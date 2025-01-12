@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<project name="vnStat-GUI" default="build">
+	<property name="release_dir" location="releases"/>
+	<exec executable="git" outputproperty="version">
+		<arg value="describe"/>
+		<arg value="--dirty"/>
+	</exec>
+	<property name="executable" location="vnstat-gui"/>
+	<property name="proj_file" location="vnStat_GUI.lpi"/>
+	<property name="arch" value="x86_64"/> <!-- другие не нужны -->
+
+
+
+	<!-- Targets: -->
+	<target name="clean">
+		<!--<delete dir="${release_dir}"/>-->
+		<delete dir="lib"/>
+		<delete file="${executable}"/>
+	</target>
+	
+	<target name="init" depends="clean">
+		<!-- <echoproperties/> -->
+		<echo>Program version: ${version}</echo>
+		<tstamp/>
+		<mkdir dir="${release_dir}"/>
+	</target>
+	
+	<target name="build" depends="init" description="Compile executable">
+		<echo>Compile executable</echo>
+		<exec executable="lazbuild">
+			<arg value="--build-mode=Release"/>
+			<!--<arg value="- - verbose"/>-->
+			<arg value="--cpu=${arch}"/>
+			<arg value="${proj_file}"/>
+		</exec>
+		<copy file="${executable}" tofile="${release_dir}/vnstat-gui_${arch}_${DSTAMP}_${version}" preservelastmodified="true"/>
+		<chmod file="${release_dir}/vnstat-gui_${arch}_${DSTAMP}_${version}" perm="+x"/>
+	</target>
+</project>

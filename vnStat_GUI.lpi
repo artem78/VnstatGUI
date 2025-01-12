@@ -58,7 +58,7 @@
         <CompilerOptions>
           <Version Value="11"/>
           <Target>
-            <Filename Value="vnStat_GUI"/>
+            <Filename Value="vnstat-gui"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -66,6 +66,7 @@
           </SearchPaths>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
+            <TargetCPU Value="x86_64"/>
             <Optimizations>
               <OptimizationLevel Value="3"/>
             </Optimizations>
@@ -128,7 +129,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="vnStat_GUI"/>
+      <Filename Value="vnstat-gui"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
