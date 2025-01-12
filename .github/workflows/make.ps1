@@ -88,7 +88,7 @@ Function Install-Program {
     $Input | Where-Object {
         ! (Test-Path -Path $_.Path)
     } | ForEach-Object -Parallel {
-        $_.OutFile = (Split-Path -Path $_.Uri -Leaf).Split('?')[0]
+        $_.OutFile = '{0}.{1}' -f (New-TemporaryFile).FullName, (Split-Path -Path $_.Uri -Leaf).Split('?')[0]
         Invoke-WebRequest -OutFile $_.OutFile -Uri $_.Uri
         Return $_
     } | ForEach-Object {

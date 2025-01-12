@@ -3,5 +3,6 @@
     "lib" : "use",
     "tst" : "tst",
     "pkg" : [
+        "splashabout"
     ]
 }
