@@ -3,6 +3,7 @@
     "lib" : "use",
     "tst" : "tst",
     "pkg" : [
+        "PoweredBy",
         "splashabout"
     ]
 }
