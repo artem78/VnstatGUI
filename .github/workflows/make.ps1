@@ -27,7 +27,7 @@ Filter Build-Project {
     @(
         @{
             Cmd = 'lazbuild'
-            Url = 'https://fossies.org/windows/misc/lazarus-3.6-fpc-3.2.2-win64.exe'
+            Uri = 'https://fossies.org/windows/misc/lazarus-3.6-fpc-3.2.2-win64.exe'
             Path = "C:\Lazarus"
         }
     ) | Install-Program
@@ -87,22 +87,17 @@ Filter Out-Log {
 Function Install-Program {
     $Input | Where-Object {
         ! (Test-Path -Path $_.Path)
+    } | ForEach-Object -Parallel {
+        $_.OutFile = (Split-Path -Path $_ -Leaf).Split('?')[0]
+        Invoke-WebRequest -OutFile $_.OutFile -Uri $_.Uri
+        Return $_
     } | ForEach-Object {
-        $_.Url | ForEach-Object -Parallel {
-            New-Variable -Option Constant -Name VAR -Value @{
-                Uri = $_
-                OutFile = (Split-Path -Path $_ -Leaf).Split('?')[0]
-            }
-            Invoke-WebRequest @VAR
-            Return $VAR.OutFile
-        } | ForEach-Object {
-            If ((Split-Path -Path $_ -Leaf).Split('.')[-1] -eq 'msi') {
-                & msiexec /passive /package $_ | Out-Null
-            } Else {
-                & ".\$_" /SP- /VERYSILENT /SUPPRESSMSGBOXES /NORESTART  | Out-Null
-            }
-            Remove-Item $_
+        If ((Split-Path -Path $_.OutFile -Leaf).Split('.')[-1] -eq 'msi') {
+            & msiexec /passive /package $_.OutFile | Out-Null
+        } Else {
+            & ".\$($_.OutFile)" /SP- /VERYSILENT /SUPPRESSMSGBOXES /NORESTART  | Out-Null
         }
+        Remove-Item $_.OutFile
         $Env:PATH+=';{0}' -f $_.Path
         Return 'installed {0}' -f (Get-Command $_.Cmd).Source
     } | Out-Log
@@ -121,7 +116,7 @@ Function Install-OPM {
         ! (& lazbuild --verbose-pkgsearch $_.Name ) &&
         ! (& lazbuild --add-package $_.Name)
     } | ForEach-Object -Parallel {
-        $_ | Check-Connect
+        $_ | Ping-Connect
         Invoke-WebRequest -OutFile $_.OutFile -Uri $_.Uri
         New-Item -Type Directory -Path $_.Path | Out-Null
         Expand-Archive -Path $_.OutFile -DestinationPath $_.Path
