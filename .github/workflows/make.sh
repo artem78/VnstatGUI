@@ -43,7 +43,7 @@ function build_project
     wait
     while read -r; do
         lazbuild --add-package-link "${REPLY}"
-        out_log audit "${REPLY} added"
+        out_log audit "added ${REPLY}"
     done < <(
         while read -r; do (
             declare -rA TMP=(
@@ -69,7 +69,7 @@ function build_project
         while read -r; do
             if ! [[ ${REPLY} =~ (cocoa|gdi|_template) ]]; then
                 lazbuild --add-package-link "${REPLY}"
-                out_log audit "${REPLY} added"
+                out_log audit "added ${REPLY}"
             fi
         done < <(find "${VAR[lib]}" -type 'f' -name '*.lpk')
     fi >&2

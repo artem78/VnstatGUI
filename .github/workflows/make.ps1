@@ -116,7 +116,6 @@ Function Install-OPM {
         ! (& lazbuild --verbose-pkgsearch $_.Name ) &&
         ! (& lazbuild --add-package $_.Name)
     } | ForEach-Object -Parallel {
-        $_ | Ping-Connect
         Invoke-WebRequest -OutFile $_.OutFile -Uri $_.Uri
         New-Item -Type Directory -Path $_.Path | Out-Null
         Expand-Archive -Path $_.OutFile -DestinationPath $_.Path
