@@ -77,9 +77,9 @@ Filter Out-Log {
         If (! (Test-Path -Path Variable:LastExitCode)) {
             "$(Get-Date -uformat '%y-%m-%d_%T')$([char]27)[33m`t{0}$([char]27)[0m" -f $_
         } ElseIf ($LastExitCode -eq 0) {
-            "$(Get-Date -uformat '%y-%m-%d_%T')$([char]27)[33m`t[{0}]`t{1}$([char]27)[0m" -f $LastExitCode, $_
+            "$(Get-Date -uformat '%y-%m-%d_%T')$([char]27)[32m`t[{0}]`t{1}$([char]27)[0m" -f $LastExitCode, $_
         } Else {
-            "$(Get-Date -uformat '%y-%m-%d_%T')$([char]27)[33m`t[{0}]`t{1}$([char]27)[0m" -f $LastExitCode, $_
+            "$(Get-Date -uformat '%y-%m-%d_%T')$([char]27)[31m`t[{0}]`t{1}$([char]27)[0m" -f $LastExitCode, $_
         }
     ) | Out-Host
 }

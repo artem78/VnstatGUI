@@ -86,10 +86,10 @@ function build_project
     while read -r; do
         mapfile -t < <(mktemp)
         if (lazbuild --build-all --recursive --no-write-project "${REPLY:?}" > "${MAPFILE[0]:?}"); then
-            out_log info "[${?}] built ${REPLY:?}"
+            out_log info "built ${REPLY:?}"
             grep --color='always' 'Linking' "${MAPFILE[0]:?}"
         else
-            out_log audit "[${?}] built ${REPLY:?}"
+            out_log audit "built ${REPLY:?}"
             grep --color='always' --extended-regexp '(Error|Fatal):' "${MAPFILE[0]:?}"
             ((exitCode+=1))
         fi >&2
