@@ -129,6 +129,7 @@ object MainForm: TMainForm
       Height = 25
       Top = 64
       Width = 99
+      Anchors = [akTop, akRight]
       Caption = 'Homepage'
       OnClick = OpenHomepageButtonClick
       TabOrder = 4
