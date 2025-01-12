@@ -32,3 +32,4 @@ lib/
 
 
 vnstat-gui
+*.backup
