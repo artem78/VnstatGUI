@@ -127,7 +127,7 @@ Function Install-OPM {
     } | Out-Log
 }
 
-Filter Ping-Connect() {
+Filter Ping-Connect {
     @{
         Method = 'POST'
         Headers = @{
