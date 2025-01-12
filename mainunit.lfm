@@ -180,6 +180,7 @@ object MainForm: TMainForm
           item
             Alignment = calBottom
             Marks.LabelBrush.Style = bsClear
+            Marks.OverlapPolicy = opHideNeighbour
             Minors = <>
             Title.LabelBrush.Style = bsClear
           end>

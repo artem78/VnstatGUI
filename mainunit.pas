@@ -60,7 +60,7 @@ var
 implementation
 
 uses process, fpjson, jsonparser, Math, DateUtils, FileUtil, TACustomSource,
-  utils;
+  TAChartUtils, utils;
 
 type
   TTimeUnit = (tuYears, tuMonths, tuDays, tuHours);
@@ -309,12 +309,29 @@ begin
     TotalSeries.BarOffsetPercent := 0;
   end;
 
-  {case TTimeUnit(TimeUnitRadioGroup.ItemIndex) of
-    tuYears:  DateTimeIntervalChartSource1.Steps := [dtsYear];
-    tuMonths: DateTimeIntervalChartSource1.Steps := [dtsMonth];
-    tuDays:   DateTimeIntervalChartSource1.Steps := [dtsDay];
-    tuHours:  DateTimeIntervalChartSource1.Steps := [dtsHour];
-  end;}
+  case TTimeUnit(TimeUnitRadioGroup.ItemIndex) of
+    tuYears:
+      begin
+        Chart1.BottomAxis.Marks.Source := nil;
+        Chart1.BottomAxis.Marks.Style:=smsValue;
+        Chart1.BottomAxis.Marks.Format:='%0:.0f';
+        Chart1.BottomAxis.Intervals.Options := [];
+      end
+
+    else
+      begin
+        case TTimeUnit(TimeUnitRadioGroup.ItemIndex) of
+          tuMonths: DateTimeIntervalChartSource1.Steps := [dtsMonth];
+          tuDays:   DateTimeIntervalChartSource1.Steps := [dtsDay];
+          tuHours:  DateTimeIntervalChartSource1.Steps := [dtsHour];
+        end;
+
+        Chart1.BottomAxis.Marks.Source := DateTimeIntervalChartSource1;
+        Chart1.BottomAxis.Marks.Style:=smsLabel;
+        //Chart1.BottomAxis.Marks.Format:='%0:.9g';
+        Chart1.BottomAxis.Intervals.Options := [aipUseMaxLength, aipUseMinLength, aipUseNiceSteps];
+      end;
+  end;
 
   case TTimeUnit(TimeUnitRadioGroup.ItemIndex) of
     tuYears:  JsonArray := DataProvider.GetYearlyStats(InterfaceComboBox.ItemIndex);
@@ -371,7 +388,7 @@ begin
           Minute := -1;
 
         case TTimeUnit(TimeUnitRadioGroup.ItemIndex) of
-          tuYears:  {X := Year} DateTime := EncodeDateTime(Year, 1, 1, 0, 0, 0, 0);
+          tuYears:  X := Year {DateTime := EncodeDateTime(Year, 1, 1, 0, 0, 0, 0)};
           tuMonths: {DateTime} X := EncodeDateTime(Year, Month, 1, 0, 0, 0, 0);
           tuDays:   {DateTime} X := EncodeDateTime(Year, Month, Day, 0, 0, 0, 0);
           tuHours:  {DateTime} X := EncodeDateTime(Year, Month, Day, Hour, Minute {0}, 0, 0);
