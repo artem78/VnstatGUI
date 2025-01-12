@@ -11,6 +11,8 @@ uses
 
 type
 
+  TTimeUnit = (tuYears, tuMonths, tuDays, tuHours);
+
   { TMainForm }
 
   TMainForm = class(TForm)
@@ -55,8 +57,12 @@ type
     procedure RefreshData;
     procedure RefreshGrid;
     procedure RefreshChart;
-  public
 
+    function GetTimeUnit: TTimeUnit;
+    function GetInterfaceId: Integer;
+  public
+    property TimeUnit: TTimeUnit read GetTimeUnit;
+    property InterfaceId: Integer read GetInterfaceId;
   end;
 
 var
@@ -66,9 +72,6 @@ implementation
 
 uses process, fpjson, jsonparser, Math, DateUtils, FileUtil, TACustomSource,
   TAChartUtils, LCLIntf, utils;
-
-type
-  TTimeUnit = (tuYears, tuMonths, tuDays, tuHours);
 
 {$R *.lfm}
 
@@ -190,19 +193,23 @@ begin
   StringGrid1.Clean;
   StringGrid1.RowCount := 1;
 
-  if (InterfaceComboBox.ItemIndex = -1) or (TimeUnitRadioGroup.ItemIndex = -1) then
+  try
+    InterfaceId;
+    TimeUnit;
+  except
     Exit;
+  end;
 
 
   StringGrid1.BeginUpdate;
   try
-    StringGrid1.Columns.Items[0].Title.Caption := ColTitles[TimeUnitRadioGroup.ItemIndex];
+    StringGrid1.Columns.Items[0].Title.Caption := ColTitles[Ord(TimeUnit)];
 
-    case TTimeUnit(TimeUnitRadioGroup.ItemIndex) of
-      tuYears:  JsonArray := DataProvider.GetYearlyStats(InterfaceComboBox.ItemIndex);
-      tuMonths: JsonArray := DataProvider.GetMontlyStats(InterfaceComboBox.ItemIndex);
-      tuDays:   JsonArray := DataProvider.GetDailyStats(InterfaceComboBox.ItemIndex);
-      tuHours:  JsonArray := DataProvider.GetHourlyStats(InterfaceComboBox.ItemIndex);
+    case TimeUnit of
+      tuYears:  JsonArray := DataProvider.GetYearlyStats(InterfaceId);
+      tuMonths: JsonArray := DataProvider.GetMontlyStats(InterfaceId);
+      tuDays:   JsonArray := DataProvider.GetDailyStats(InterfaceId);
+      tuHours:  JsonArray := DataProvider.GetHourlyStats(InterfaceId);
     end;
 
     if Assigned(JsonArray) then
@@ -231,7 +238,7 @@ begin
           else
             Minute := -1;
 
-          case TTimeUnit(TimeUnitRadioGroup.ItemIndex) of
+          case TimeUnit of
             tuYears:  DateStr := IntToStr(Year);
             tuMonths: DateStr := Format('%.4d-%.2d', [Year, Month]);
             tuDays:   DateStr := Format('%.4d-%.2d-%.2d', [Year, Month, Day]);
@@ -274,11 +281,11 @@ var
   Rx, Tx: Int64;
   Year, Month, Day, Hour, Minute: Integer;
   X: {Integer} Double;
-  DateTime: TDateTime;
+  //DateTime: TDateTime;
   MaxBytes: Int64 = 0;
   K: Integer;
   Rx2, Tx2: Double;
-  AxisOpts: TAxisIntervalParamOptions;
+  //AxisOpts: TAxisIntervalParamOptions;
 begin
   RxSeries.Clear;
   TxSeries.Clear;
@@ -288,8 +295,12 @@ begin
   TxSeries.SeriesColor := TxColor;
   TotalSeries.SeriesColor := TotalColor;
 
-  if (InterfaceComboBox.ItemIndex = -1) or (TimeUnitRadioGroup.ItemIndex = -1) then
+  try
+    InterfaceId;
+    TimeUnit;
+  except
     Exit;
+  end;
 
   if SideBySideBarsCheckBox.Checked then
   begin
@@ -324,7 +335,7 @@ begin
     TotalSeries.BarOffsetPercent := 0;
   end;
 
-  case TTimeUnit(TimeUnitRadioGroup.ItemIndex) of
+  case TimeUnit of
     tuYears:
       begin
         Chart1.BottomAxis.Marks.Source := nil;
@@ -335,7 +346,7 @@ begin
 
     else
       begin
-        case TTimeUnit(TimeUnitRadioGroup.ItemIndex) of
+        case TimeUnit of
           tuMonths: DateTimeIntervalChartSource1.Steps := [dtsMonth];
           tuDays:   DateTimeIntervalChartSource1.Steps := [dtsDay];
           tuHours:  DateTimeIntervalChartSource1.Steps := [dtsHour];
@@ -348,7 +359,7 @@ begin
       end;
   end;
 
-  case TTimeUnit(TimeUnitRadioGroup.ItemIndex) of
+  case TimeUnit of
     tuYears:  JsonArray := DataProvider.GetYearlyStats(InterfaceComboBox.ItemIndex);
     tuMonths: JsonArray := DataProvider.GetMontlyStats(InterfaceComboBox.ItemIndex);
     tuDays:   JsonArray := DataProvider.GetDailyStats(InterfaceComboBox.ItemIndex);
@@ -402,7 +413,7 @@ begin
         else
           Minute := -1;
 
-        case TTimeUnit(TimeUnitRadioGroup.ItemIndex) of
+        case TimeUnit of
           tuYears:  X := Year {DateTime := EncodeDateTime(Year, 1, 1, 0, 0, 0, 0)};
           tuMonths: {DateTime} X := EncodeDateTime(Year, Month, 1, 0, 0, 0, 0);
           tuDays:   {DateTime} X := EncodeDateTime(Year, Month, Day, 0, 0, 0, 0);
@@ -420,6 +431,22 @@ begin
       FreeAndNil(JsonArrayEnum);
     end;
   end;
+end;
+
+function TMainForm.GetTimeUnit: TTimeUnit;
+begin
+  if TimeUnitRadioGroup.ItemIndex = -1 then
+    raise Exception.Create('TimeUnit not set');
+
+  Result := TTimeUnit(TimeUnitRadioGroup.ItemIndex);
+end;
+
+function TMainForm.GetInterfaceId: Integer;
+begin
+  if InterfaceComboBox.ItemIndex = -1 then
+    raise Exception.Create('Network interface not set');
+
+  Result := InterfaceComboBox.ItemIndex;
 end;
 
 end.
