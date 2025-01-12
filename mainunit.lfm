@@ -114,6 +114,25 @@ object MainForm: TMainForm
       OnClick = RefreshButtonClick
       TabOrder = 2
     end
+    object AboutButton: TButton
+      Left = 648
+      Height = 25
+      Top = 101
+      Width = 99
+      Anchors = [akTop, akRight]
+      Caption = 'About...'
+      OnClick = AboutButtonClick
+      TabOrder = 3
+    end
+    object OpenHomepageButton: TButton
+      Left = 648
+      Height = 25
+      Top = 64
+      Width = 99
+      Caption = 'Homepage'
+      OnClick = OpenHomepageButtonClick
+      TabOrder = 4
+    end
   end
   object PageControl1: TPageControl
     Left = 0
@@ -234,5 +253,33 @@ object MainForm: TMainForm
     OnDateTimeStepChange = DateTimeIntervalChartSource1DateTimeStepChange
     Left = 631
     Top = 345
+  end
+  object SplashAbout1: TSplashAbout
+    PoweredBy.About.Description.Strings = (
+      'Component that shows a Powered By graphic.'#10'Use method ShowPoweredByForm in your form.create()'#10'to use the component'
+    )
+    PoweredBy.About.Title = 'PoweredBy component'
+    PoweredBy.About.Height = 280
+    PoweredBy.About.Width = 400
+    PoweredBy.About.Font.Color = clNavy
+    PoweredBy.About.Font.Height = -13
+    PoweredBy.About.Font.Name = 'Arial'
+    PoweredBy.About.BackGroundColor = clWindow
+    PoweredBy.About.Version = '1.0.4.0'
+    PoweredBy.About.Authorname = 'Gordon Bamber'
+    PoweredBy.About.Organisation = 'Public Domain'
+    PoweredBy.About.AuthorEmail = 'minesadorada@charcodelvalle.com'
+    PoweredBy.About.ComponentName = 'PoweredBy component'
+    PoweredBy.About.LicenseType = abModifiedGPL
+    BackGroundColor = clDefault
+    LicenseFile = saGPL
+    SupportContact = 'megabyte1024@ya.ru'
+    Author = 'artem78'
+    TitleStyle = saApplication
+    UserTitle = 'My Application'
+    ShowDescription = False
+    Description = 'Graphical interface to vnStat console traffic monitor'
+    Left = 624
+    Top = 440
   end
 end

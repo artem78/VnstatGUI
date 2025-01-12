@@ -7,19 +7,22 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Grids, ExtCtrls,
   StdCtrls, ComCtrls, Buttons, TAGraph, TASeries, TAIntervalSources,
-  VnstatDataProvider, Types;
+  VnstatDataProvider, usplashabout, Types;
 
 type
 
   { TMainForm }
 
   TMainForm = class(TForm)
+    AboutButton: TButton;
+    OpenHomepageButton: TButton;
     Chart1: TChart;
     RefreshButton: TBitBtn;
     SideBySideBarsCheckBox: TCheckBox;
     DateTimeIntervalChartSource1: TDateTimeIntervalChartSource;
     ChartSettingsPanel: TPanel;
     RxLineSeries: TBarSeries;
+    SplashAbout1: TSplashAbout;
     TotalSeries: TBarSeries;
     TxSeries: TBarSeries;
     RxSeries: TBarSeries;
@@ -31,12 +34,14 @@ type
     StringGrid1: TStringGrid;
     TableTabSheet: TTabSheet;
     ChartTabSheet: TTabSheet;
+    procedure AboutButtonClick(Sender: TObject);
     procedure DateTimeIntervalChartSource1DateTimeStepChange(Sender: TObject;
       ASteps: TDateTimeStep);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure InterfaceComboBoxChange(Sender: TObject);
+    procedure OpenHomepageButtonClick(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);
     procedure SideBySideBarsCheckBoxChange(Sender: TObject);
@@ -60,7 +65,7 @@ var
 implementation
 
 uses process, fpjson, jsonparser, Math, DateUtils, FileUtil, TACustomSource,
-  TAChartUtils, utils;
+  TAChartUtils, LCLIntf, utils;
 
 type
   TTimeUnit = (tuYears, tuMonths, tuDays, tuHours);
@@ -105,6 +110,11 @@ begin
 
 end;
 
+procedure TMainForm.AboutButtonClick(Sender: TObject);
+begin
+  SplashAbout1.ShowAbout;
+end;
+
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   DataProvider.Free;
@@ -123,6 +133,11 @@ end;
 procedure TMainForm.InterfaceComboBoxChange(Sender: TObject);
 begin
   RefreshData;
+end;
+
+procedure TMainForm.OpenHomepageButtonClick(Sender: TObject);
+begin
+  OpenURL('https://github.com/artem78/VnstatGUI');
 end;
 
 procedure TMainForm.PageControl1Change(Sender: TObject);
