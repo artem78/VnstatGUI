@@ -31,7 +31,7 @@ Filter Build-Project {
             Path = "C:\Lazarus"
         }
     ) | Install-Program
-    $_.Pkg | Install-Package
+    $_.Pkg | Install-OPM
     If (Test-Path -Path $_.lib) {
         (Get-ChildItem -Filter '*.lpk' -Recurse -File –Path $_.lib).FullName |
             Where-Object {
@@ -108,7 +108,7 @@ Function Install-Program {
     } | Out-Log
 }
 
-Function Install-Package {
+Function Install-OPM {
     $Input | ForEach-Object {
         @{
             Name = $_
@@ -133,7 +133,7 @@ Function Install-Package {
     } | Out-Log
 }
 
-Filter Check-Connect() {
+Filter Ping-Connect() {
     @{
         Method = 'POST'
         Headers = @{
