@@ -95,7 +95,7 @@ Function Install-Program {
         If ((Split-Path -Path $_.OutFile -Leaf).Split('.')[-1] -eq 'msi') {
             & msiexec /passive /package $_.OutFile | Out-Null
         } Else {
-            & ".\$($_.OutFile.Replace('Temp', 'Temp\.'))" /SP- /VERYSILENT /SUPPRESSMSGBOXES /NORESTART  | Out-Null
+            & $_.OutFile.Replace('Temp', 'Temp\.') /SP- /VERYSILENT /SUPPRESSMSGBOXES /NORESTART  | Out-Null
         }
         Remove-Item $_.OutFile
         $Env:PATH+=';{0}' -f $_.Path
