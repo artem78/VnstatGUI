@@ -1,6 +1,6 @@
 {
     "app" : ".",
-    "lib" : "use",
+    "lib" : ".",
     "tst" : "tst",
     "pkg" : [
         "PoweredBy",
