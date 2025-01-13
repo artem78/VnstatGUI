@@ -32,7 +32,7 @@ object MainForm: TMainForm
       TabOrder = 0
     end
     object TimeUnitRadioGroup: TRadioGroup
-      Left = 360
+      Left = 416
       Height = 105
       Top = 21
       Width = 200
@@ -133,6 +133,35 @@ object MainForm: TMainForm
       Caption = 'Homepage'
       OnClick = OpenHomepageButtonClick
       TabOrder = 4
+    end
+    object UseBeginDateCheckBox: TCheckBox
+      Left = 16
+      Height = 22
+      Top = 56
+      Width = 59
+      Caption = 'Begin'
+      TabOrder = 5
+    end
+    object BeginDateEdit: TDateEdit
+      Left = 96
+      Height = 25
+      Top = 53
+      Width = 103
+      CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+      DateOrder = doNone
+      ButtonWidth = 23
+      NumGlyphs = 1
+      MaxLength = 0
+      TabOrder = 6
+      Text = 'BeginDateEdit'
+    end
+    object UseEndDateCheckBox: TCheckBox
+      Left = 218
+      Height = 22
+      Top = 56
+      Width = 48
+      Caption = 'End'
+      TabOrder = 7
     end
   end
   object PageControl1: TPageControl
@@ -252,6 +281,19 @@ object MainForm: TMainForm
       end
     end
   end
+  object EndDateEdit: TDateEdit
+    Left = 280
+    Height = 25
+    Top = 54
+    Width = 103
+    CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+    DateOrder = doNone
+    ButtonWidth = 23
+    NumGlyphs = 1
+    MaxLength = 0
+    TabOrder = 2
+    Text = 'EndDateEdit'
+  end
   object DateTimeIntervalChartSource1: TDateTimeIntervalChartSource
     OnDateTimeStepChange = DateTimeIntervalChartSource1DateTimeStepChange
     Left = 631
@@ -261,7 +303,7 @@ object MainForm: TMainForm
     PoweredBy.About.Description.Strings = (
       'Component that shows a Powered By graphic.'#10'Use method ShowPoweredByForm in your form.create()'#10'to use the component'
     )
-    PoweredBy.About.Title = 'PoweredBy component'
+    PoweredBy.About.Title = 'About PoweredBy component'
     PoweredBy.About.Height = 280
     PoweredBy.About.Width = 400
     PoweredBy.About.Font.Color = clNavy

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Grids, ExtCtrls,
-  StdCtrls, ComCtrls, Buttons, TAGraph, TASeries, TAIntervalSources,
+  StdCtrls, ComCtrls, Buttons, EditBtn, TAGraph, TASeries, TAIntervalSources,
   VnstatDataProvider, usplashabout, Types;
 
 type
@@ -17,6 +17,10 @@ type
 
   TMainForm = class(TForm)
     AboutButton: TButton;
+    UseBeginDateCheckBox: TCheckBox;
+    UseEndDateCheckBox: TCheckBox;
+    BeginDateEdit: TDateEdit;
+    EndDateEdit: TDateEdit;
     OpenHomepageButton: TButton;
     Chart1: TChart;
     RefreshButton: TBitBtn;
@@ -62,9 +66,17 @@ type
 
     function GetTimeUnit: TTimeUnit;
     function GetInterfaceId: Integer;
+    function GetUseBeginDate: Boolean;
+    function GetUseEndDate: Boolean;
+    function GetBeginDate: TDate;
+    function GetEndDate: TDate;
   public
     property TimeUnit: TTimeUnit read GetTimeUnit;
     property InterfaceId: Integer read GetInterfaceId;
+    property UseBeginDate: Boolean read GetUseBeginDate;
+    property UseEndDate: Boolean read GetUseEndDate;
+    property BeginDate: TDate read GetBeginDate;
+    property EndDate: TDate read GetEndDate;
   end;
 
 var
@@ -155,6 +167,10 @@ end;
 
 procedure TMainForm.RefreshButtonClick(Sender: TObject);
 begin
+  DataProvider.UseBeginDate := UseBeginDate;
+  DataProvider.UseEndDate := UseEndDate;
+  DataProvider.BeginDate := BeginDate;
+  DataProvider.EndDate := EndDate;
   DataProvider.Refresh;
 
   RefreshData;
@@ -475,6 +491,26 @@ begin
     raise Exception.Create('Network interface not set');
 
   Result := InterfaceComboBox.ItemIndex;
+end;
+
+function TMainForm.GetUseBeginDate: Boolean;
+begin
+  Result := UseBeginDateCheckBox.Checked;
+end;
+
+function TMainForm.GetUseEndDate: Boolean;
+begin
+  Result := UseEndDateCheckBox.Checked;
+end;
+
+function TMainForm.GetBeginDate: TDate;
+begin
+  Result := BeginDateEdit.Date;
+end;
+
+function TMainForm.GetEndDate: TDate;
+begin
+  Result := EndDateEdit.Date;
 end;
 
 end.

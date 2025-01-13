@@ -14,6 +14,11 @@ type
 
   TVnstatDataProvider = class(TObject)
     public
+      UseBeginDate: Boolean;
+      UseEndDate: Boolean;
+      BeginDate: TDate;
+      EndDate: TDate;
+
       constructor Create;
       destructor Destroy; override;
 
@@ -48,6 +53,8 @@ const
 constructor TVnstatDataProvider.Create;
 begin
   Data := nil;
+  UseBeginDate := false;
+  UseEndDate := false;
 end;
 
 destructor TVnstatDataProvider.Destroy;
@@ -107,6 +114,7 @@ end;
 procedure TVnstatDataProvider.LoadData;
 const
   BUF_SIZE = 2048; // Buffer size for reading the output in chunks
+  DateFmt = 'YYYY-MM-DD';
 var
   Proc         : TProcess;
   OutputStream : TStream;
@@ -119,6 +127,16 @@ begin
   try
     Proc.Executable := FindDefaultExecutablePath(Executable);
     Proc.Parameters.Add('--json');
+    if UseBeginDate then
+    begin
+      Proc.Parameters.Add('--begin');
+      Proc.Parameters.Add(FormatDateTime(DateFmt, BeginDate));
+    end;
+    if UseEndDate then
+    begin
+      Proc.Parameters.Add('--end');
+      Proc.Parameters.Add(FormatDateTime(DateFmt, EndDate));
+    end;
     Proc.Options := [poUsePipes{, poWaitOnExit}];
     Proc.Execute;
 
