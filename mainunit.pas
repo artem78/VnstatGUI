@@ -47,6 +47,8 @@ type
     procedure PageControl1Change(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);
     procedure SideBySideBarsCheckBoxChange(Sender: TObject);
+    procedure StringGrid1CompareCells(Sender: TObject; ACol, ARow, BCol,
+      BRow: Integer; var Result: integer);
     procedure TimeUnitRadioGroupClick(Sender: TObject);
     procedure TxSeriesBeforeDrawBar(ASender: TBarSeries; ACanvas: TCanvas;
       const ARect: TRect; APointIndex, AStackIndex: Integer;
@@ -105,6 +107,9 @@ begin
   //InterfaceComboBox.ItemIndex := 0;
 
   StringGrid1.AutoSizeColumns;
+  StringGrid1.SortColRow(True, 0);
+  StringGrid1.SortOrder:=soAscending;
+  //fixme: where green triangle?
 end;
 
 procedure TMainForm.DateTimeIntervalChartSource1DateTimeStepChange(
@@ -158,6 +163,29 @@ end;
 procedure TMainForm.SideBySideBarsCheckBoxChange(Sender: TObject);
 begin
   RefreshData;
+end;
+
+procedure TMainForm.StringGrid1CompareCells(Sender: TObject; ACol, ARow, BCol,
+  BRow: Integer; var Result: integer);
+var
+  BytesA, BytesB: Int64;
+begin
+  if (ACol in [1..3]) and (BCol = ACol) then
+  begin
+    BytesA := StrToBytes(StringGrid1.Cells[ACol,ARow]);
+    BytesB := StrToBytes(StringGrid1.Cells[BCol,BRow]);
+    if BytesA > BytesB then
+      Result := 1
+    else if BytesA < BytesB then
+      Result := -1
+    else
+      Result := 0;
+  end
+  else
+    Result := CompareText(StringGrid1.Cells[ACol,ARow], StringGrid1.Cells[BCol,BRow]);
+
+ if StringGrid1.SortOrder = soDescending then
+    Result := -Result;
 end;
 
 procedure TMainForm.TimeUnitRadioGroupClick(Sender: TObject);
