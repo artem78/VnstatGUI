@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Grids, ExtCtrls,
   StdCtrls, ComCtrls, Buttons, EditBtn, TAGraph, TASeries, TAIntervalSources,
-  VnstatDataProvider, usplashabout, Types;
+  TATools, VnstatDataProvider, usplashabout, Types;
 
 type
 
@@ -17,6 +17,8 @@ type
 
   TMainForm = class(TForm)
     AboutButton: TButton;
+    ChartToolset1: TChartToolset;
+    ChartToolset1DataPointHintTool1: TDataPointHintTool;
     UseBeginDateCheckBox: TCheckBox;
     UseEndDateCheckBox: TCheckBox;
     BeginDateEdit: TDateEdit;
@@ -41,6 +43,8 @@ type
     TableTabSheet: TTabSheet;
     ChartTabSheet: TTabSheet;
     procedure AboutButtonClick(Sender: TObject);
+    procedure ChartToolset1DataPointHintTool1Hint(ATool: TDataPointHintTool;
+      const APoint: TPoint; var AHint: String);
     procedure DateTimeIntervalChartSource1DateTimeStepChange(Sender: TObject;
       ASteps: TDateTimeStep);
     procedure FormCreate(Sender: TObject);
@@ -133,6 +137,28 @@ end;
 procedure TMainForm.AboutButtonClick(Sender: TObject);
 begin
   SplashAbout1.ShowAbout;
+end;
+
+procedure TMainForm.ChartToolset1DataPointHintTool1Hint(
+  ATool: TDataPointHintTool; const APoint: TPoint; var AHint: String);
+var
+  X, Y: Double;
+begin
+  AHint:='';
+
+  with ATool as TDataPointHintTool do
+    if (Series is TBarSeries) then
+      with TBarSeries(Series) do begin
+        x := GetXValue(PointIndex);
+        y := GetYValue(PointIndex);
+        case TimeUnit of
+          tuYears:  AHint := IntToStr(Round(X));
+          tuMonths: AHint := FormatDateTime('mmmmm YYYY', X);
+          tuDays:   AHint := FormatDateTime('dd mmmmm YYYY', X);
+          tuHours:  AHint := FormatDateTime('dd mmmmm YYYY HH', X) + 'h';
+        end;
+        AHint := AHint + ' - ' + FloatToStr(Y) + ' ' + Chart.LeftAxis.Title.Caption;
+      end;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
