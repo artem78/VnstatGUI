@@ -16,10 +16,6 @@ Options:
 }
 
 Filter Build-Project {
-    If (! (Test-Path -Path $_.app)) {
-        'Did not find ' + $_.app | Out-Log
-        Exit 1
-    }
     If (Test-Path -Path '.gitmodules') {
         & git submodule update --init --recursive --force --remote | Out-Host
         'updated git submodule' | Out-Log
@@ -38,8 +34,8 @@ Filter Build-Project {
                 $_ -notmatch '(cocoa|x11|_template)'
             } | ForEach-Object {
                 & lazbuild --add-package-link $_ | Out-Null
-                Return 'added {0}' -f $_
-            } | Out-Log
+                'added {0}' -f $_ | Out-Log
+            }
     }
     Exit $(
         If (Test-Path -Path $_.tst) {
@@ -75,11 +71,11 @@ Filter Build-Project {
 Filter Out-Log {
     $(
         If (! (Test-Path -Path Variable:LastExitCode)) {
-            "$(Get-Date -uformat '%y-%m-%d_%T')$([char]27)[33m`t{0}$([char]27)[0m" -f $_
+            "$(Get-Date -uformat '%y-%m-%d_%T')$([char]27)[33m {0}$([char]27)[0m" -f $_
         } ElseIf ($LastExitCode -eq 0) {
-            "$(Get-Date -uformat '%y-%m-%d_%T')$([char]27)[32m`t[{0}]`t{1}$([char]27)[0m" -f $LastExitCode, $_
+            "$(Get-Date -uformat '%y-%m-%d_%T')$([char]27)[32m {0}$([char]27)[0m" -f $_
         } Else {
-            "$(Get-Date -uformat '%y-%m-%d_%T')$([char]27)[31m`t[{0}]`t{1}$([char]27)[0m" -f $LastExitCode, $_
+            "$(Get-Date -uformat '%y-%m-%d_%T')$([char]27)[31m [{0}]`t{1}$([char]27)[0m" -f $LastExitCode, $_
         }
     ) | Out-Host
 }
@@ -99,8 +95,8 @@ Function Install-Program {
         }
         Remove-Item $_.OutFile
         $Env:PATH+=';{0}' -f $_.Path
-        Return 'installed {0}' -f (Get-Command $_.Cmd).Source
-    } | Out-Log
+        'installed {0}' -f (Get-Command $_.Cmd).Source | Out-Log
+    }
 }
 
 Function Install-OPM {
@@ -123,8 +119,8 @@ Function Install-OPM {
         Return (Get-ChildItem -Filter '*.lpk' -Recurse -File –Path $_.Path).FullName
     } | ForEach-Object {
         & lazbuild --add-package-link $_ | Out-Null
-        Return 'added {0}' -f $_
-    } | Out-Log
+        'added {0}' -f $_ | Out-Log
+    }
 }
 
 Filter Ping-Connect {
