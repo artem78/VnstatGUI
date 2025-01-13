@@ -1,6 +1,6 @@
 # vnStat GUI
 
-Graphical interface to [vnStat](https://en.wikipedia.org/wiki/VnStat) console traffic monitor.
+Graphical interface for [vnStat](https://en.wikipedia.org/wiki/VnStat) console traffic monitor. It simply calls `vnstat` command with `--json` argument and parse output.
 
 ![](screenshots/1.png "")
 
@@ -15,7 +15,7 @@ Graphical interface to [vnStat](https://en.wikipedia.org/wiki/VnStat) console tr
 
 # How to build from source
 
-Download and install Lazarus IDE and Free Pascal compiler from [www.lazarus-ide.org](https://www.lazarus-ide.org/index.php?page=downloads). You should install 3 packages: fpc-laz, fpc-src and lazarus-project.
+Download and install Lazarus IDE and Free Pascal compiler from [www.lazarus-ide.org](https://www.lazarus-ide.org/index.php?page=downloads). You should install 3 packages: `fpc-laz`, `fpc-src` and `lazarus-project`.
 
 Start Lazarus and create new project (choose "Application" type). Open "Package --> Online Package Manager". Find and install "SplashAbout" package.
 
@@ -32,4 +32,4 @@ Run in terminal:
 lazbuild --build-mode=Release vnStat_GUI.lpi
 ```
 
-This will make "vnstat-gui" executable in the project main directory.
+This will make `vnstat-gui` executable in the project main directory.
