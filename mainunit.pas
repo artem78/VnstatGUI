@@ -139,6 +139,10 @@ begin
 
   BeginDTPicker.Date := IncDay(Now, -14);
   EndDTPicker.Date := Now;
+
+  {$ifopt D+}
+  Caption:=Caption+' - [DEBUG BUILD]';
+  {$endif}
 end;
 
 procedure TMainForm.DateTimeIntervalChartSource1DateTimeStepChange(
