@@ -65,6 +65,7 @@ type
   private
     DataProvider: TVnstatDataProvider;
 
+    procedure ReloadAndRefresh;
     procedure RefreshData;
     procedure RefreshGrid;
     procedure RefreshChart;
@@ -178,8 +179,7 @@ begin
   if InterfaceComboBox.ItemIndex = -1 then
   begin
     InterfaceComboBox.ItemIndex := 0;
-    DataProvider.Refresh;
-    RefreshData;
+    ReloadAndRefresh;
   end;
 end;
 
@@ -200,13 +200,7 @@ end;
 
 procedure TMainForm.RefreshButtonClick(Sender: TObject);
 begin
-  DataProvider.UseBeginDate := UseBeginDate;
-  DataProvider.UseEndDate := UseEndDate;
-  DataProvider.BeginDate := BeginDate;
-  DataProvider.EndDate := EndDate;
-  DataProvider.Refresh;
-
-  RefreshData;
+  ReloadAndRefresh;
 end;
 
 procedure TMainForm.SideBySideBarsCheckBoxChange(Sender: TObject);
@@ -247,6 +241,17 @@ procedure TMainForm.TxSeriesBeforeDrawBar(ASender: TBarSeries;
   var ADoDefaultDrawing: Boolean);
 begin
 
+end;
+
+procedure TMainForm.ReloadAndRefresh;
+begin
+  DataProvider.UseBeginDate := UseBeginDate;
+  DataProvider.UseEndDate := UseEndDate;
+  DataProvider.BeginDate := BeginDate;
+  DataProvider.EndDate := EndDate;
+  DataProvider.Refresh;
+
+  RefreshData;
 end;
 
 procedure TMainForm.RefreshData;
