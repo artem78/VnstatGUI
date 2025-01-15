@@ -335,4 +335,9 @@ object MainForm: TMainForm
       OnHint = ChartToolset1DataPointHintTool1Hint
     end
   end
+  object BytesChartSource: TListChartSource
+    YCount = 3
+    Left = 344
+    Top = 408
+  end
 end

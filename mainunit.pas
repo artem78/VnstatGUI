@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Grids, ExtCtrls,
   StdCtrls, ComCtrls, Buttons, EditBtn, TAGraph, TASeries, TAIntervalSources,
-  TATools, VnstatDataProvider, usplashabout, Types;
+  TATools, TASources, VnstatDataProvider, usplashabout, Types;
 
 type
 
@@ -19,6 +19,7 @@ type
     AboutButton: TButton;
     ChartToolset1: TChartToolset;
     ChartToolset1DataPointHintTool1: TDataPointHintTool;
+    BytesChartSource: TListChartSource;
     UseBeginDateCheckBox: TCheckBox;
     UseEndDateCheckBox: TCheckBox;
     BeginDateEdit: TDateEdit;
@@ -143,21 +144,27 @@ procedure TMainForm.ChartToolset1DataPointHintTool1Hint(
   ATool: TDataPointHintTool; const APoint: TPoint; var AHint: String);
 var
   X, Y: Double;
+  DateStr: string;
 begin
   AHint:='';
 
   with ATool as TDataPointHintTool do
     if (Series is TBarSeries) then
       with TBarSeries(Series) do begin
-        x := GetXValue(PointIndex);
-        y := GetYValue(PointIndex);
+        X := GetXValue(PointIndex);
+        //Y := GetYValue(PointIndex);
         case TimeUnit of
-          tuYears:  AHint := IntToStr(Round(X));
-          tuMonths: AHint := FormatDateTime('mmmmm YYYY', X);
-          tuDays:   AHint := FormatDateTime('dd mmmmm YYYY', X);
-          tuHours:  AHint := FormatDateTime('dd mmmmm YYYY HH', X) + 'h';
+          tuYears:  DateStr := IntToStr(Round(X));
+          tuMonths: DateStr := FormatDateTime('mmmmm YYYY', X);
+          tuDays:   DateStr := FormatDateTime('d mmmmm YYYY', X);
+          tuHours:  DateStr := FormatDateTime('d mmmmm YYYY HH', X) + 'h';
         end;
-        AHint := AHint + ' - ' + FloatToStr(Y) + ' ' + Chart.LeftAxis.Title.Caption;
+        AHint := Format('    %s - in: %s, out: %s, total: %s', [
+                    DateStr,
+                    BytesToStr(Round(BytesChartSource.Item[PointIndex]^.Y)),
+                    BytesToStr(Round(BytesChartSource.Item[PointIndex]^.YList[0])),
+                    BytesToStr(Round(BytesChartSource.Item[PointIndex]^.YList[1]))
+        ]);
       end;
 end;
 
@@ -357,6 +364,8 @@ var
   Rx2, Tx2: Double;
   //AxisOpts: TAxisIntervalParamOptions;
 begin
+  BytesChartSource.Clear;
+
   RxSeries.Clear;
   TxSeries.Clear;
   TotalSeries.Clear;
@@ -494,7 +503,7 @@ begin
         TxSeries.AddXY(X {DateTime}, {Tx} Tx2);
         TotalSeries.AddXY(X {DateTime}, {Rx + Tx} Rx2 + Tx2);
 
-
+        BytesChartSource.AddXYList(X, [Rx, Tx, Rx + Tx]);
       end;
 
     finally
