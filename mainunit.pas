@@ -404,6 +404,10 @@ begin
   finally
     StringGrid1.EndUpdate();
     StringGrid1.AutoSizeColumns;
+
+    // after update sorting lost, but sort arrows still remain
+    // fix this
+    StringGrid1.HideSortArrow;
   end;
 end;
 
