@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Grids, ExtCtrls,
   StdCtrls, ComCtrls, Buttons, EditBtn, TAGraph, TASeries, TAIntervalSources,
-  TATools, TASources, VnstatDataProvider, usplashabout, Types;
+  TATools, TASources, DateTimePicker, VnstatDataProvider, usplashabout, Types;
 
 type
 
@@ -17,13 +17,13 @@ type
 
   TMainForm = class(TForm)
     AboutButton: TButton;
+    BeginDTPicker: TDateTimePicker;
     ChartToolset1: TChartToolset;
     ChartToolset1DataPointHintTool1: TDataPointHintTool;
     BytesChartSource: TListChartSource;
-    UseBeginDateCheckBox: TCheckBox;
-    UseEndDateCheckBox: TCheckBox;
-    BeginDateEdit: TDateEdit;
-    EndDateEdit: TDateEdit;
+    EndDTPicker: TDateTimePicker;
+    Label1: TLabel;
+    Label3: TLabel;
     OpenHomepageButton: TButton;
     Chart1: TChart;
     RefreshButton: TBitBtn;
@@ -44,10 +44,16 @@ type
     TableTabSheet: TTabSheet;
     ChartTabSheet: TTabSheet;
     procedure AboutButtonClick(Sender: TObject);
+    procedure BeginDTPickerChange(Sender: TObject);
+    procedure BeginDTPickerCheckBoxChange(Sender: TObject);
+    procedure BeginDTPickerEnter(Sender: TObject);
     procedure ChartToolset1DataPointHintTool1Hint(ATool: TDataPointHintTool;
       const APoint: TPoint; var AHint: String);
     procedure DateTimeIntervalChartSource1DateTimeStepChange(Sender: TObject;
       ASteps: TDateTimeStep);
+    procedure EndDTPickerChange(Sender: TObject);
+    procedure EndDTPickerCheckBoxChange(Sender: TObject);
+    procedure EndDTPickerEnter(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -62,6 +68,8 @@ type
     procedure TxSeriesBeforeDrawBar(ASender: TBarSeries; ACanvas: TCanvas;
       const ARect: TRect; APointIndex, AStackIndex: Integer;
       var ADoDefaultDrawing: Boolean);
+    procedure UseBeginDateCheckBoxChange(Sender: TObject);
+    procedure UseEndDateCheckBoxChange(Sender: TObject);
   private
     DataProvider: TVnstatDataProvider;
 
@@ -128,6 +136,9 @@ begin
   StringGrid1.SortColRow(True, 0);
   StringGrid1.SortOrder:=soAscending;
   //fixme: where green triangle?
+
+  BeginDTPicker.Date := IncDay(Now, -14);
+  EndDTPicker.Date := Now;
 end;
 
 procedure TMainForm.DateTimeIntervalChartSource1DateTimeStepChange(
@@ -136,9 +147,45 @@ begin
 
 end;
 
+procedure TMainForm.EndDTPickerChange(Sender: TObject);
+begin
+  ReloadAndRefresh;
+end;
+
+procedure TMainForm.EndDTPickerCheckBoxChange(Sender: TObject);
+begin
+  ReloadAndRefresh;
+end;
+
+procedure TMainForm.EndDTPickerEnter(Sender: TObject);
+begin
+  if UseBeginDate then
+    TDateTimePicker(Sender).MinDate := BeginDate
+  else
+    TDateTimePicker(Sender).MinDate := MinDateTime;
+end;
+
 procedure TMainForm.AboutButtonClick(Sender: TObject);
 begin
   SplashAbout1.ShowAbout;
+end;
+
+procedure TMainForm.BeginDTPickerChange(Sender: TObject);
+begin
+  ReloadAndRefresh;
+end;
+
+procedure TMainForm.BeginDTPickerCheckBoxChange(Sender: TObject);
+begin
+  ReloadAndRefresh;
+end;
+
+procedure TMainForm.BeginDTPickerEnter(Sender: TObject);
+begin
+  if UseEndDate then
+    TDateTimePicker(Sender).MaxDate := EndDate
+  else
+    TDateTimePicker(Sender).MaxDate := MaxDateTime;
 end;
 
 procedure TMainForm.ChartToolset1DataPointHintTool1Hint(
@@ -241,6 +288,16 @@ procedure TMainForm.TxSeriesBeforeDrawBar(ASender: TBarSeries;
   var ADoDefaultDrawing: Boolean);
 begin
 
+end;
+
+procedure TMainForm.UseBeginDateCheckBoxChange(Sender: TObject);
+begin
+  ReloadAndRefresh;
+end;
+
+procedure TMainForm.UseEndDateCheckBoxChange(Sender: TObject);
+begin
+  ReloadAndRefresh;
 end;
 
 procedure TMainForm.ReloadAndRefresh;
@@ -535,22 +592,22 @@ end;
 
 function TMainForm.GetUseBeginDate: Boolean;
 begin
-  Result := UseBeginDateCheckBox.Checked;
+  Result := BeginDTPicker.Checked;
 end;
 
 function TMainForm.GetUseEndDate: Boolean;
 begin
-  Result := UseEndDateCheckBox.Checked;
+  Result := EndDTPicker.Checked;
 end;
 
 function TMainForm.GetBeginDate: TDate;
 begin
-  Result := BeginDateEdit.Date;
+  Result := BeginDTPicker.Date;
 end;
 
 function TMainForm.GetEndDate: TDate;
 begin
-  Result := EndDateEdit.Date;
+  Result := EndDTPicker.Date;
 end;
 
 end.
