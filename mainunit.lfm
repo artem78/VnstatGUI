@@ -13,18 +13,18 @@ object MainForm: TMainForm
   LCLVersion = '2.2.4.0'
   object Panel1: TPanel
     Left = 0
-    Height = 144
+    Height = 200
     Top = 0
     Width = 772
     Align = alTop
     BevelOuter = bvNone
-    ClientHeight = 144
+    ClientHeight = 200
     ClientWidth = 772
     TabOrder = 0
     object InterfaceComboBox: TComboBox
       Left = 88
       Height = 30
-      Top = 16
+      Top = 58
       Width = 219
       ItemHeight = 0
       OnChange = InterfaceComboBoxChange
@@ -34,7 +34,7 @@ object MainForm: TMainForm
     object TimeUnitRadioGroup: TRadioGroup
       Left = 416
       Height = 105
-      Top = 21
+      Top = 63
       Width = 200
       AutoFill = True
       AutoSize = True
@@ -62,7 +62,7 @@ object MainForm: TMainForm
     object Label2: TLabel
       Left = 16
       Height = 16
-      Top = 21
+      Top = 63
       Width = 54
       Caption = 'Interface'
       ParentColor = False
@@ -70,7 +70,7 @@ object MainForm: TMainForm
     object RefreshButton: TBitBtn
       Left = 16
       Height = 28
-      Top = 98
+      Top = 140
       Width = 106
       AutoSize = True
       Caption = 'Refresh data'
@@ -117,7 +117,7 @@ object MainForm: TMainForm
     object AboutButton: TButton
       Left = 648
       Height = 25
-      Top = 101
+      Top = 143
       Width = 99
       Anchors = [akTop, akRight]
       Caption = 'About...'
@@ -127,7 +127,7 @@ object MainForm: TMainForm
     object OpenHomepageButton: TButton
       Left = 648
       Height = 25
-      Top = 64
+      Top = 106
       Width = 99
       Anchors = [akTop, akRight]
       Caption = 'Homepage'
@@ -137,7 +137,7 @@ object MainForm: TMainForm
     object BeginDTPicker: TDateTimePicker
       Left = 88
       Height = 22
-      Top = 56
+      Top = 98
       Width = 112
       ShowCheckBox = True
       Checked = False
@@ -165,7 +165,7 @@ object MainForm: TMainForm
     object Label1: TLabel
       Left = 16
       Height = 16
-      Top = 58
+      Top = 100
       Width = 35
       Caption = 'Begin'
       ParentColor = False
@@ -173,16 +173,44 @@ object MainForm: TMainForm
     object Label3: TLabel
       Left = 224
       Height = 16
-      Top = 58
+      Top = 100
       Width = 24
       Caption = 'End'
       ParentColor = False
     end
+    object Label4: TLabel
+      Left = 16
+      Height = 16
+      Top = 27
+      Width = 28
+      Caption = 'Host'
+      ParentColor = False
+    end
+    object RemoteHostEdit: TEdit
+      Left = 88
+      Height = 25
+      Top = 23
+      Width = 219
+      OnChange = RemoteHostEditChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 6
+      TextHint = '[user@]host[:port], SSH used, leave empty for localhost'
+    end
+    object ConnectButton: TButton
+      Left = 320
+      Height = 28
+      Top = 20
+      Width = 97
+      Caption = 'Connect'
+      OnClick = ConnectButtonClick
+      TabOrder = 7
+    end
   end
   object PageControl1: TPageControl
     Left = 0
-    Height = 461
-    Top = 144
+    Height = 405
+    Top = 200
     Width = 772
     ActivePage = ChartTabSheet
     Align = alClient
@@ -191,11 +219,11 @@ object MainForm: TMainForm
     OnChange = PageControl1Change
     object TableTabSheet: TTabSheet
       Caption = 'Table'
-      ClientHeight = 427
+      ClientHeight = 371
       ClientWidth = 766
       object StringGrid1: TStringGrid
         Left = 0
-        Height = 427
+        Height = 371
         Top = 0
         Width = 766
         Align = alClient
@@ -228,11 +256,11 @@ object MainForm: TMainForm
     end
     object ChartTabSheet: TTabSheet
       Caption = 'Chart'
-      ClientHeight = 427
+      ClientHeight = 371
       ClientWidth = 766
       object Chart1: TChart
         Left = 0
-        Height = 385
+        Height = 329
         Top = 0
         Width = 766
         AxisList = <        
@@ -276,7 +304,7 @@ object MainForm: TMainForm
       object ChartSettingsPanel: TPanel
         Left = 10
         Height = 22
-        Top = 395
+        Top = 339
         Width = 746
         Align = alBottom
         AutoSize = True
@@ -300,7 +328,7 @@ object MainForm: TMainForm
   object EndDTPicker: TDateTimePicker
     Left = 264
     Height = 22
-    Top = 56
+    Top = 98
     Width = 112
     ShowCheckBox = True
     Checked = False

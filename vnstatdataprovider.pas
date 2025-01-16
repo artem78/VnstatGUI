@@ -18,6 +18,7 @@ type
       UseEndDate: Boolean;
       BeginDate: TDate;
       EndDate: TDate;
+      Host: String;
 
       constructor Create;
       destructor Destroy; override;
@@ -55,6 +56,7 @@ begin
   Data := nil;
   UseBeginDate := false;
   UseEndDate := false;
+  Host := '';
 end;
 
 destructor TVnstatDataProvider.Destroy;
@@ -112,6 +114,20 @@ begin
 end;
 
 procedure TVnstatDataProvider.LoadData;
+  function ProcToStr(AProc: TProcess): String;
+  var
+    Param: String;
+  begin
+    Result := AProc.Executable;
+    for Param in AProc.Parameters do
+    begin
+      if Param.Contains(' ') then
+        Result := Result + ' ''' + Param + ''''
+      else
+        Result := Result + ' ' + Param;
+    end;
+  end;
+
 const
   BUF_SIZE = 2048; // Buffer size for reading the output in chunks
   DateFmt = 'YYYY-MM-DD';
@@ -121,6 +137,7 @@ var
   BytesRead    : longint;
   Buffer       : array[1..BUF_SIZE] of byte;
   JsonParser: TJSONParser;
+  Cmd: String;
 begin
   Proc := TProcess.Create(nil);
   OutputStream := TMemoryStream.Create;
@@ -137,6 +154,17 @@ begin
       Proc.Parameters.Add('--end');
       Proc.Parameters.Add(FormatDateTime(DateFmt, EndDate));
     end;
+
+    if (Host <> '') and (Host <> 'localhost') then
+    begin
+      Cmd := ProcToStr(Proc);
+      //writeln(cmd);
+      Proc.Executable:='ssh';
+      Proc.Parameters.Clear;
+      Proc.Parameters.Add(Host);
+      Proc.Parameters.Add(Cmd);
+    end;
+
     Proc.Options := [poUsePipes{, poWaitOnExit}];
     Proc.Execute;
 

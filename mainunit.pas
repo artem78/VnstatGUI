@@ -18,12 +18,15 @@ type
   TMainForm = class(TForm)
     AboutButton: TButton;
     BeginDTPicker: TDateTimePicker;
+    ConnectButton: TButton;
     ChartToolset1: TChartToolset;
     ChartToolset1DataPointHintTool1: TDataPointHintTool;
     BytesChartSource: TListChartSource;
+    RemoteHostEdit: TEdit;
     EndDTPicker: TDateTimePicker;
     Label1: TLabel;
     Label3: TLabel;
+    Label4: TLabel;
     OpenHomepageButton: TButton;
     Chart1: TChart;
     RefreshButton: TBitBtn;
@@ -49,6 +52,7 @@ type
     procedure BeginDTPickerEnter(Sender: TObject);
     procedure ChartToolset1DataPointHintTool1Hint(ATool: TDataPointHintTool;
       const APoint: TPoint; var AHint: String);
+    procedure ConnectButtonClick(Sender: TObject);
     procedure DateTimeIntervalChartSource1DateTimeStepChange(Sender: TObject;
       ASteps: TDateTimeStep);
     procedure EndDTPickerChange(Sender: TObject);
@@ -61,6 +65,7 @@ type
     procedure OpenHomepageButtonClick(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);
+    procedure RemoteHostEditChange(Sender: TObject);
     procedure SideBySideBarsCheckBoxChange(Sender: TObject);
     procedure StringGrid1CompareCells(Sender: TObject; ACol, ARow, BCol,
       BRow: Integer; var Result: integer);
@@ -73,6 +78,7 @@ type
   private
     DataProvider: TVnstatDataProvider;
 
+    procedure RefreshInterfaceList;
     procedure ReloadAndRefresh;
     procedure RefreshData;
     procedure RefreshGrid;
@@ -84,6 +90,7 @@ type
     function GetUseEndDate: Boolean;
     function GetBeginDate: TDate;
     function GetEndDate: TDate;
+    function GetRemoteHost: String;
   public
     property TimeUnit: TTimeUnit read GetTimeUnit;
     property InterfaceId: Integer read GetInterfaceId;
@@ -91,6 +98,7 @@ type
     property UseEndDate: Boolean read GetUseEndDate;
     property BeginDate: TDate read GetBeginDate;
     property EndDate: TDate read GetEndDate;
+    property RemoteHost: String read GetRemoteHost;
   end;
 
 var
@@ -108,7 +116,6 @@ uses process, fpjson, jsonparser, Math, DateUtils, FileUtil, TACustomSource,
 procedure TMainForm.FormCreate(Sender: TObject);
 var
   Interfaces: TStringArray;
-  InterfaceName: String;
 begin
   DataProvider := TVnstatDataProvider.Create;
 
@@ -127,9 +134,7 @@ begin
     Exit;
   end;
 
-  InterfaceComboBox.Clear;
-  for InterfaceName in Interfaces do
-    InterfaceComboBox.Items.Append(InterfaceName);
+  RefreshInterfaceList;
   //InterfaceComboBox.ItemIndex := 0;
 
   StringGrid1.AutoSizeColumns;
@@ -220,6 +225,12 @@ begin
       end;
 end;
 
+procedure TMainForm.ConnectButtonClick(Sender: TObject);
+begin
+  RefreshInterfaceList;
+  InterfaceComboBox.ItemIndex:=0;
+end;
+
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   DataProvider.Free;
@@ -252,6 +263,11 @@ end;
 procedure TMainForm.RefreshButtonClick(Sender: TObject);
 begin
   ReloadAndRefresh;
+end;
+
+procedure TMainForm.RemoteHostEditChange(Sender: TObject);
+begin
+  //RefreshInterfaceList;
 end;
 
 procedure TMainForm.SideBySideBarsCheckBoxChange(Sender: TObject);
@@ -304,12 +320,26 @@ begin
   ReloadAndRefresh;
 end;
 
+procedure TMainForm.RefreshInterfaceList;
+var
+  //Interfaces: TStringArray;
+  InterfaceName: String;
+begin
+  InterfaceComboBox.Clear;
+  DataProvider.Host := RemoteHost;
+  DataProvider.Refresh;
+
+  for InterfaceName in DataProvider.GetInterfaces do
+    InterfaceComboBox.Items.Append(InterfaceName);
+end;
+
 procedure TMainForm.ReloadAndRefresh;
 begin
   DataProvider.UseBeginDate := UseBeginDate;
   DataProvider.UseEndDate := UseEndDate;
   DataProvider.BeginDate := BeginDate;
   DataProvider.EndDate := EndDate;
+  DataProvider.Host := RemoteHost;
   DataProvider.Refresh;
 
   RefreshData;
@@ -616,6 +646,11 @@ end;
 function TMainForm.GetEndDate: TDate;
 begin
   Result := EndDTPicker.Date;
+end;
+
+function TMainForm.GetRemoteHost: String;
+begin
+  Result := RemoteHostEdit.Text;
 end;
 
 end.

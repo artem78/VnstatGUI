@@ -1,6 +1,6 @@
 # vnStat GUI
 
-Graphical interface for [vnStat](https://en.wikipedia.org/wiki/VnStat) console traffic monitor. It simply calls `vnstat` command with `--json` argument and parse output.
+Graphical interface for [vnStat](https://en.wikipedia.org/wiki/VnStat) console traffic monitor. It simply calls `vnstat` command with `--json` argument and parse output. Also this program can recieve statistics from remote machine using SSH.
 
 ![](screenshots/1.png "")
 
