@@ -11,6 +11,7 @@ object MainForm: TMainForm
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '2.2.4.0'
+  WindowState = wsMaximized
   object Panel1: TPanel
     Left = 0
     Height = 200
@@ -362,7 +363,7 @@ object MainForm: TMainForm
     PoweredBy.About.Description.Strings = (
       'Component that shows a Powered By graphic.'#10'Use method ShowPoweredByForm in your form.create()'#10'to use the component'
     )
-    PoweredBy.About.Title = 'About PoweredBy component'
+    PoweredBy.About.Title = 'About About PoweredBy component'
     PoweredBy.About.Height = 280
     PoweredBy.About.Width = 400
     PoweredBy.About.Font.Color = clNavy
