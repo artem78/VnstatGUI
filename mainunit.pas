@@ -229,6 +229,7 @@ procedure TMainForm.ConnectButtonClick(Sender: TObject);
 begin
   RefreshInterfaceList;
   InterfaceComboBox.ItemIndex:=0;
+  ReloadAndRefresh;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
