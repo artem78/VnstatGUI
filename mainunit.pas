@@ -119,6 +119,35 @@ var
 begin
   DataProvider := TVnstatDataProvider.Create;
 
+  with DefaultFormatSettings do
+  begin
+    ShortMonthNames[1] := 'Jan';
+    ShortMonthNames[2] := 'Feb';
+    ShortMonthNames[3] := 'Mar';
+    ShortMonthNames[4] := 'Apr';
+    ShortMonthNames[5] := 'May';
+    ShortMonthNames[6] := 'Jun';
+    ShortMonthNames[7] := 'Jul';
+    ShortMonthNames[8] := 'Aug';
+    ShortMonthNames[9] := 'Sep';
+    ShortMonthNames[10] := 'Oct';
+    ShortMonthNames[11] := 'Nov';
+    ShortMonthNames[12] := 'Dec';
+
+    LongMonthNames[1] := 'January';
+    LongMonthNames[2] := 'February';
+    LongMonthNames[3] := 'March';
+    LongMonthNames[4] := 'April';
+    LongMonthNames[5] := 'May';
+    LongMonthNames[6] := 'June';
+    LongMonthNames[7] := 'July';
+    LongMonthNames[8] := 'August';
+    LongMonthNames[9] := 'September';
+    LongMonthNames[10] := 'October';
+    LongMonthNames[11] := 'November';
+    LongMonthNames[12] := 'December';
+  end;
+
   if not DataProvider.VnstatInstalled then
   begin
     MessageDlg('Could''t find ''vnstat'' executable. Check VnStat installed on your computer.', mtError, [mbOK], 0);
@@ -213,6 +242,11 @@ begin
         case TimeUnit of
           tuYears:  DateStr := IntToStr(Round(X));
           tuMonths: DateStr := FormatDateTime('mmmmm YYYY', X);
+            // For Russian (and possible for some other languages)
+            // gives not quite right result:
+            // "апреля 2025" instead of "апрель 2025"
+            // Month names force switched to English.
+
           tuDays:   DateStr := FormatDateTime('d mmmmm YYYY', X);
           tuHours:  DateStr := FormatDateTime('d mmmmm YYYY HH', X) + 'h';
         end;
