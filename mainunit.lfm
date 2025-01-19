@@ -282,7 +282,6 @@ object MainForm: TMainForm
         Legend.Alignment = laTopCenter
         Legend.ColumnCount = 999
         Legend.Spacing = 10
-        Legend.Visible = True
         Title.Text.Strings = (
           'TAChart'
         )

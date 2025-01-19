@@ -508,6 +508,7 @@ begin
   RxSeries.SeriesColor := RxColor;
   TxSeries.SeriesColor := TxColor;
   TotalSeries.SeriesColor := TotalColor;
+  Chart1.Legend.Visible:=true;
 
   try
     InterfaceId;
