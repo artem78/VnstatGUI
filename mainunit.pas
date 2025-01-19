@@ -148,7 +148,7 @@ begin
     LongMonthNames[12] := 'December';
   end;
 
-  if not DataProvider.VnstatInstalled then
+  if not DataProvider.CheckVnstatInstalled then
   begin
     MessageDlg('Could''t find ''vnstat'' executable. Check VnStat installed on your computer.', mtError, [mbOK], 0);
     Application.Terminate;

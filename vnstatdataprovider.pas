@@ -23,7 +23,7 @@ type
       constructor Create;
       destructor Destroy; override;
 
-      function VnstatInstalled: Boolean;
+      function CheckVnstatInstalled: Boolean;
       function GetInterfaces: TStringArray;
       function GetYearlyStats(AInterfaceId: Integer): TJSONArray;
       function GetMontlyStats(AInterfaceId: Integer): TJSONArray;
@@ -64,7 +64,7 @@ begin
   FreeAndNil(Data);
 end;
 
-function TVnstatDataProvider.VnstatInstalled: Boolean;
+function TVnstatDataProvider.CheckVnstatInstalled: Boolean;
 var
   Path: String;
 begin
