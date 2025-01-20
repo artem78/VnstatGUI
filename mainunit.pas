@@ -379,7 +379,7 @@ var
   JsonArray: TJSONArray;
   JsonArrayEnum: TBaseJSONEnumerator;
   DateStr, RxStr, TxStr, TotalStr{, AvgRateStr}: String;
-  Rx, Tx: Int64;
+  RxBytes, TxBytes: Int64; // recieved/transmitted in bytes
   Year, Month, Day, Hour, Minute: Integer;
 begin
   StringGrid1.Clean;
@@ -410,8 +410,8 @@ begin
       try
         while JsonArrayEnum.MoveNext do
         begin
-          Rx := JsonArrayEnum.Current.Value.FindPath('rx').AsInt64;
-          Tx := JsonArrayEnum.Current.Value.FindPath('tx').AsInt64;
+          RxBytes := JsonArrayEnum.Current.Value.FindPath('rx').AsInt64;
+          TxBytes := JsonArrayEnum.Current.Value.FindPath('tx').AsInt64;
           Year := JsonArrayEnum.Current.Value.FindPath('date.year').AsInteger;
           if Assigned(JsonArrayEnum.Current.Value.FindPath('date.month')) then
             Month := JsonArrayEnum.Current.Value.FindPath('date.month').AsInteger
@@ -438,9 +438,9 @@ begin
             tuHours:  DateStr := Format('%.4d-%.2d-%.2d %.2d:%.2d', [Year, Month, Day, Hour, Minute]);
           end;
 
-          RxStr := BytesToStr(Rx);
-          TxStr := BytesToStr(Tx);
-          TotalStr := BytesToStr(Rx + Tx);
+          RxStr := BytesToStr(RxBytes);
+          TxStr := BytesToStr(TxBytes);
+          TotalStr := BytesToStr(RxBytes + TxBytes);
           //AvgRateStr := BytesToStr(JsonArrayEnum.Current.Value.FindPath('a').AsInt64);
 
 
@@ -474,14 +474,12 @@ const
 var
   JsonArray: TJSONArray;
   JsonArrayEnum: TBaseJSONEnumerator;
-  Rx, Tx: Int64;
+  RxBytes, TxBytes: Int64; // recieved/transmitted in bytes
+  Rx, Tx: Double; // recieved/transmitted in kb, mb, gb, etc...
   Year, Month, Day, Hour, Minute: Integer;
-  X: {Integer} Double;
-  //DateTime: TDateTime;
+  X: Double;
   MaxBytes: Int64 = 0;
-  K: Integer;
-  Rx2, Tx2: Double;
-  //AxisOpts: TAxisIntervalParamOptions;
+  Exp: Integer;
 begin
   BytesChartSource.Clear;
 
@@ -572,29 +570,29 @@ begin
     try
       while JsonArrayEnum.MoveNext do
       begin
-        Rx := JsonArrayEnum.Current.Value.FindPath('rx').AsInt64;
-        Tx := JsonArrayEnum.Current.Value.FindPath('tx').AsInt64;
-        MaxBytes := Max(MaxBytes, Max(Rx, Tx));
+        RxBytes := JsonArrayEnum.Current.Value.FindPath('rx').AsInt64;
+        TxBytes := JsonArrayEnum.Current.Value.FindPath('tx').AsInt64;
+        MaxBytes := Max(MaxBytes, Max(RxBytes, TxBytes));
       end;
     finally
       FreeAndNil(JsonArrayEnum);
     end;
 
-    K := 0;
-    while MaxBytes > IntPower(1024, K + 1) do
-      Inc(K);
+    Exp := 0;
+    while MaxBytes > IntPower(1024, Exp + 1) do
+      Inc(Exp);
 
-    Chart1.LeftAxis.Title.Caption := SizeUnit[K];
+    Chart1.LeftAxis.Title.Caption := SizeUnit[Exp];
 
 
     JsonArrayEnum := JsonArray.GetEnumerator;
     try
       while JsonArrayEnum.MoveNext do
       begin
-        Rx := JsonArrayEnum.Current.Value.FindPath('rx').AsInt64;
-        Tx := JsonArrayEnum.Current.Value.FindPath('tx').AsInt64;
-        Rx2 := Rx / IntPower(1024, K);
-        Tx2 := Tx / IntPower(1024, K);
+        RxBytes := JsonArrayEnum.Current.Value.FindPath('rx').AsInt64;
+        TxBytes := JsonArrayEnum.Current.Value.FindPath('tx').AsInt64;
+        Rx := RxBytes / IntPower(1024, Exp);
+        Tx := TxBytes / IntPower(1024, Exp);
         Year := JsonArrayEnum.Current.Value.FindPath('date.year').AsInteger;
         if Assigned(JsonArrayEnum.Current.Value.FindPath('date.month')) then
           Month := JsonArrayEnum.Current.Value.FindPath('date.month').AsInteger
@@ -614,17 +612,17 @@ begin
           Minute := -1;
 
         case TimeUnit of
-          tuYears:  X := Year {DateTime := EncodeDateTime(Year, 1, 1, 0, 0, 0, 0)};
-          tuMonths: {DateTime} X := EncodeDateTime(Year, Month, 1, 0, 0, 0, 0);
-          tuDays:   {DateTime} X := EncodeDateTime(Year, Month, Day, 0, 0, 0, 0);
-          tuHours:  {DateTime} X := EncodeDateTime(Year, Month, Day, Hour, Minute {0}, 0, 0);
+          tuYears:  X := Year;
+          tuMonths: X := EncodeDateTime(Year, Month, 1, 0, 0, 0, 0);
+          tuDays:   X := EncodeDateTime(Year, Month, Day, 0, 0, 0, 0);
+          tuHours:  X := EncodeDateTime(Year, Month, Day, Hour, Minute {0}, 0, 0);
         end;
 
-        RxSeries.AddXY(X {DateTime}, {Rx} Rx2);
-        TxSeries.AddXY(X {DateTime}, {Tx} Tx2);
-        TotalSeries.AddXY(X {DateTime}, {Rx + Tx} Rx2 + Tx2);
+        RxSeries.AddXY(X, Rx);
+        TxSeries.AddXY(X, Tx);
+        TotalSeries.AddXY(X, Rx + Tx);
 
-        BytesChartSource.AddXYList(X, [Rx, Tx, Rx + Tx]);
+        BytesChartSource.AddXYList(X, [RxBytes, TxBytes, RxBytes + TxBytes]);
       end;
 
     finally
