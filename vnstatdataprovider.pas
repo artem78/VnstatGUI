@@ -68,8 +68,16 @@ function TVnstatDataProvider.CheckVnstatInstalled: Boolean;
 var
   Path: String;
 begin
-  Path := FindDefaultExecutablePath(Executable);
-  Result := (Path <> '') and FileExists(Path);
+  Result := False;
+
+  {Path := FindDefaultExecutablePath(Executable);
+  Result := (Path <> '') and FileExists(Path);}
+
+  if (Host = '') or (Host = 'localhost') then
+    RunCommand('which', [Executable], Path)
+  else
+    RunCommand('ssh', [Host, 'which ' + Executable], Path);
+  Result := Path <> '';
 end;
 
 function TVnstatDataProvider.GetInterfaces: TStringArray;

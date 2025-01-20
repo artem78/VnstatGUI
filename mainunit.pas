@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Grids, ExtCtrls,
-  StdCtrls, ComCtrls, Buttons, EditBtn, TAGraph, TASeries, TAIntervalSources,
+  StdCtrls, ComCtrls, Buttons, TAGraph, TASeries, TAIntervalSources,
   TATools, TASources, DateTimePicker, VnstatDataProvider, usplashabout, Types;
 
 type
@@ -77,12 +77,15 @@ type
     procedure UseEndDateCheckBoxChange(Sender: TObject);
   private
     DataProvider: TVnstatDataProvider;
+    IsFirstShow: Boolean;
 
     procedure RefreshInterfaceList;
     procedure ReloadAndRefresh;
     procedure RefreshData;
     procedure RefreshGrid;
     procedure RefreshChart;
+    procedure Connect;
+    procedure ClearData;
 
     function GetTimeUnit: TTimeUnit;
     function GetInterfaceId: Integer;
@@ -118,6 +121,7 @@ var
   Interfaces: TStringArray;
 begin
   DataProvider := TVnstatDataProvider.Create;
+  IsFirstShow := True;
 
   with DefaultFormatSettings do
   begin
@@ -147,24 +151,6 @@ begin
     LongMonthNames[11] := 'November';
     LongMonthNames[12] := 'December';
   end;
-
-  if not DataProvider.CheckVnstatInstalled then
-  begin
-    MessageDlg('Could''t find ''vnstat'' executable. Check VnStat installed on your computer.', mtError, [mbOK], 0);
-    Application.Terminate;
-    Exit;
-  end;
-
-  Interfaces := DataProvider.GetInterfaces;
-  if Length(Interfaces) = 0 then
-  begin
-    MessageDlg('No network interfaces found.', mtError, [mbOK], 0);
-    Application.Terminate;
-    Exit;
-  end;
-
-  RefreshInterfaceList;
-  //InterfaceComboBox.ItemIndex := 0;
 
   StringGrid1.AutoSizeColumns;
   StringGrid1.SortColRow(True, 0);
@@ -261,9 +247,7 @@ end;
 
 procedure TMainForm.ConnectButtonClick(Sender: TObject);
 begin
-  RefreshInterfaceList;
-  InterfaceComboBox.ItemIndex:=0;
-  ReloadAndRefresh;
+  Connect;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -273,10 +257,10 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-  if InterfaceComboBox.ItemIndex = -1 then
+  if IsFirstShow then
   begin
-    InterfaceComboBox.ItemIndex := 0;
-    ReloadAndRefresh;
+    IsFirstShow:=False;
+    Connect;
   end;
 end;
 
@@ -509,6 +493,7 @@ begin
   TxSeries.SeriesColor := TxColor;
   TotalSeries.SeriesColor := TotalColor;
   Chart1.Legend.Visible:=true;
+  Chart1.Visible:=true;
 
   try
     InterfaceId;
@@ -646,6 +631,49 @@ begin
       FreeAndNil(JsonArrayEnum);
     end;
   end;
+end;
+
+procedure TMainForm.Connect;
+var
+  Interfaces: TStringArray;
+begin
+  InterfaceComboBox.Clear;
+  ClearData;
+
+  DataProvider.Host := RemoteHost;
+  DataProvider.Refresh;
+
+  if not DataProvider.CheckVnstatInstalled then
+  begin
+    MessageDlg('Could''t find ''vnstat'' executable. Check vnStat installed '
+             + 'on your computer or remote server.', mtError, [mbOK], 0);
+    //Application.Terminate;
+    Exit;
+  end;
+
+  Interfaces := DataProvider.GetInterfaces;
+  if Length(Interfaces) = 0 then
+  begin
+    MessageDlg('No network interfaces found.', mtError, [mbOK], 0);
+    //Application.Terminate;
+    Exit;
+  end;
+
+  RefreshInterfaceList;
+  InterfaceComboBox.ItemIndex := 0;
+
+  RefreshData;
+
+end;
+
+procedure TMainForm.ClearData;
+begin
+  StringGrid1.Clear;
+  //Chart1.ClearSeries;
+  {RxSeries.Clear;
+  TxSeries.Clear;
+  TotalSeries.Clear;}
+  Chart1.Visible:=False;
 end;
 
 function TMainForm.GetTimeUnit: TTimeUnit;
