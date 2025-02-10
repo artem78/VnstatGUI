@@ -53,8 +53,6 @@ type
     procedure ChartToolset1DataPointHintTool1Hint(ATool: TDataPointHintTool;
       const APoint: TPoint; var AHint: String);
     procedure ConnectButtonClick(Sender: TObject);
-    procedure DateTimeIntervalChartSource1DateTimeStepChange(Sender: TObject;
-      ASteps: TDateTimeStep);
     procedure EndDTPickerChange(Sender: TObject);
     procedure EndDTPickerCheckBoxChange(Sender: TObject);
     procedure EndDTPickerEnter(Sender: TObject);
@@ -165,12 +163,6 @@ begin
   {$ifopt D+}
   Caption:=Caption+' - [DEBUG BUILD]';
   {$endif}
-end;
-
-procedure TMainForm.DateTimeIntervalChartSource1DateTimeStepChange(
-  Sender: TObject; ASteps: TDateTimeStep);
-begin
-
 end;
 
 procedure TMainForm.EndDTPickerChange(Sender: TObject);

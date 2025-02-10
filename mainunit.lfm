@@ -355,7 +355,6 @@ object MainForm: TMainForm
     OnEnter = EndDTPickerEnter
   end
   object DateTimeIntervalChartSource1: TDateTimeIntervalChartSource
-    OnDateTimeStepChange = DateTimeIntervalChartSource1DateTimeStepChange
     Left = 631
     Top = 345
   end
