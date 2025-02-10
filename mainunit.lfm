@@ -193,6 +193,7 @@ object MainForm: TMainForm
       Top = 23
       Width = 219
       OnChange = RemoteHostEditChange
+      OnKeyDown = RemoteHostEditKeyDown
       ParentShowHint = False
       ShowHint = True
       TabOrder = 6

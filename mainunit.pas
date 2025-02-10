@@ -66,6 +66,8 @@ type
     procedure PageControl1Change(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);
     procedure RemoteHostEditChange(Sender: TObject);
+    procedure RemoteHostEditKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure SideBySideBarsCheckBoxChange(Sender: TObject);
     procedure StringGrid1CompareCells(Sender: TObject; ACol, ARow, BCol,
       BRow: Integer; var Result: integer);
@@ -110,7 +112,7 @@ var
 implementation
 
 uses process, fpjson, jsonparser, Math, DateUtils, FileUtil, TACustomSource,
-  TAChartUtils, LCLIntf, utils;
+  TAChartUtils, LCLIntf, LCLType, utils;
 
 {$R *.lfm}
 
@@ -287,6 +289,13 @@ end;
 procedure TMainForm.RemoteHostEditChange(Sender: TObject);
 begin
   //RefreshInterfaceList;
+end;
+
+procedure TMainForm.RemoteHostEditKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    Connect;
 end;
 
 procedure TMainForm.SideBySideBarsCheckBoxChange(Sender: TObject);
