@@ -34,3 +34,4 @@ lib/
 vnstat-gui
 *.backup
 /releases/
+/data/.fakedata1.json.swp
