@@ -504,6 +504,7 @@ begin
   if SideBySideBarsCheckBox.Checked then
   begin
     TxSeries.ShowInLegend := True;
+    TxSeries.Active:=True;
     TotalSeries.Title := 'Total';
     TotalSeries.SeriesColor := TotalColor;
 
@@ -520,6 +521,7 @@ begin
   begin
     TxSeries.ShowInLegend := False;
     //TxSeries.Visible := False;
+    TxSeries.Active:=false;
     TotalSeries.Title := TxSeries.Title;
     TotalSeries.SeriesColor := TxSeries.SeriesColor;
 
